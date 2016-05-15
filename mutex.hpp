@@ -13,8 +13,11 @@ public:
 	{
 		pthread_mutex_init (&mutex_, nullptr);
 	}
+	void* operator new (size_t size) = delete;
+
 	mutex (const mutex&) = delete;
 	mutex (mutex&&) = delete;
+
 	compl mutex ()
 	{
 		pthread_mutex_destroy (&mutex_);
@@ -44,7 +47,7 @@ private:
 };
 
 class mutex_guard
-{
+{ 
 public:
 	mutex_guard (mutex& m):m_ (m)
 	{
@@ -72,6 +75,7 @@ public:
 	{
 		pthread_cond_init (&pcondition_, nullptr);
 	}
+	condition (const condition&) = delete;
 
 	compl condition ()
 	{
