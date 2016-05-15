@@ -17,6 +17,7 @@ public:
 
 	mutex (const mutex&) = delete;
 	mutex (mutex&&) = delete;
+	void operator = (const mutex&) = delete;
 
 	compl mutex ()
 	{
@@ -54,8 +55,10 @@ public:
 		m_.lock ();
 	}
 
+	void* operator new (size_t size) = delete;
 	mutex_guard (const mutex_guard&) = delete;
 	mutex_guard (mutex_guard&&) = delete;
+	void operator = (const mutex_guard&) = delete;
 
 	compl mutex_guard ()
 	{
@@ -75,7 +78,11 @@ public:
 	{
 		pthread_cond_init (&pcondition_, nullptr);
 	}
+
 	condition (const condition&) = delete;
+	condition (condition&&) = delete;
+	void operator = (const condition&) = delete;
+
 
 	compl condition ()
 	{
