@@ -16,21 +16,21 @@ class timestamp : public boost::less_than_comparable<timestamp>
 public:
 	constexpr static int microseconds_per_second = 1000 * 1000;
 public:
-	timestamp (): microseconds_since_epoc_ (0)
+	timestamp () noexcept: microseconds_since_epoc_ (0)
 	{
 
 	}
-	explicit timestamp (uint64_t microseconds_since_epoc) : microseconds_since_epoc_ (microseconds_since_epoc) 
+	explicit timestamp (uint64_t microseconds_since_epoc)  noexcept: microseconds_since_epoc_ (microseconds_since_epoc) 
 	{ 
 
 	}
 
-	void swap (timestamp& that)
+	void swap (timestamp& that) noexcept
 	{
 		std::swap (microseconds_since_epoc_, that.microseconds_since_epoc_);
 	}
 
-	string to_string ()
+	string to_string () noexcept
 	{
 		string str (32, '\0');
 
@@ -42,7 +42,7 @@ public:
 		return str;
 	}
 
-	string to_formatted_string (bool show_microseconds = true)
+	string to_formatted_string (bool show_microseconds = true) noexcept
 	{
 		string str (32, '\0');
 		time_t seconds = static_cast<time_t> (microseconds_since_epoc_ / microseconds_per_second);
@@ -67,29 +67,29 @@ public:
 		return str;
 	}
 
-	bool valid ()
+	bool valid () noexcept
 	{
 		return microseconds_since_epoc_ > 0;
 	}
 
-	uint64_t microseconds_since_epoc ()
+	uint64_t microseconds_since_epoc () noexcept
 	{
 		return microseconds_since_epoc_;
 	}
 
-	time_t seconds_since_epoc ()
+	time_t seconds_since_epoc () noexcept
 	{
 		return static_cast<time_t> (microseconds_since_epoc_) / microseconds_per_second;
 	}
 
 public: //static
 
-	static timestamp from_unix_time (time_t t, int offset_microseconds = 0)
+	static timestamp from_unix_time (time_t t, int offset_microseconds = 0) noexcept
 	{
 		return timestamp {static_cast<uint64_t> (t) * microseconds_per_second + offset_microseconds};
 	}
 
-	static timestamp now ()
+	static timestamp now () noexcept
 	{
 		struct timeval tv;
 		gettimeofday (&tv, nullptr);
@@ -101,17 +101,17 @@ private:
 	uint64_t microseconds_since_epoc_;
 };
 
-inline bool operator < (timestamp l, timestamp r)
+inline bool operator < (timestamp l, timestamp r) noexcept
 {
 	return l.microseconds_since_epoc () < r.microseconds_since_epoc ();
 }
 
-inline bool operator != (timestamp l, timestamp r)
+inline bool operator != (timestamp l, timestamp r) noexcept
 {
 	return l.microseconds_since_epoc () != r.microseconds_since_epoc ();
 }
 
-inline double time_diff (timestamp high, timestamp low)
+inline double time_diff (timestamp high, timestamp low) noexcept
 {
 	auto diff = high.microseconds_since_epoc () - low.microseconds_since_epoc ();
 

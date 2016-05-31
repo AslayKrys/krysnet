@@ -13,7 +13,7 @@ template<typename T>
 class blocking_queue
 {
 public:
-	blocking_queue (): m_ (),not_empty_ (m_),queue_ ()
+	blocking_queue () noexcept: m_ (),not_empty_ (m_),queue_ ()
 	{
 
 	}
@@ -22,7 +22,7 @@ public:
 	compl blocking_queue () = default;
 
 	template<typename ... ARGS>
-	void emplace(ARGS&& ... args)
+	void emplace(ARGS&& ... args) noexcept
 	{
 		mutex_guard guard (m_);
 		queue_.emplace_back (std::forward<ARGS>(args)...);

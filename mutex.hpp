@@ -11,7 +11,7 @@ class condition;
 class mutex
 {
 public:
-	mutex ()
+	mutex () noexcept
 	{
 		pthread_mutex_init (&mutex_, nullptr);
 	}
@@ -21,23 +21,23 @@ public:
 	mutex (mutex&&) = delete;
 	void operator = (const mutex&) = delete;
 
-	compl mutex ()
+	compl mutex () noexcept
 	{
 		pthread_mutex_destroy (&mutex_);
 	}
 
 private:
-	void lock ()
+	void lock () noexcept
 	{
 		pthread_mutex_lock (&mutex_);
 	}
 
-	void unlock ()
+	void unlock () noexcept
 	{
 		pthread_mutex_unlock (&mutex_);
 	}
 
-	auto& get ()
+	auto& get () noexcept
 	{
 		return mutex_;
 	}

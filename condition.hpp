@@ -6,7 +6,7 @@ namespace krys
 class condition
 {
 public:
-	explicit condition (mutex& m) :m_ (m)
+	explicit condition (mutex& m) noexcept:m_ (m) 
 	{
 		pthread_cond_init (&pcondition_, nullptr);
 	}
@@ -16,20 +16,20 @@ public:
 	void operator = (const condition&) = delete;
 
 
-	compl condition ()
+	compl condition () noexcept
 	{
 		pthread_cond_destroy (&pcondition_);
 	}
 
-	void wait ()
+	void wait () noexcept
 	{
 		pthread_cond_wait (&pcondition_, &m_.get ());
 	}
-	void notify ()
+	void notify () noexcept
 	{
 		pthread_cond_signal (&pcondition_);
 	}
-	void notify_all ()
+	void notify_all () noexcept
 	{
 		pthread_cond_broadcast (&pcondition_);
 	}

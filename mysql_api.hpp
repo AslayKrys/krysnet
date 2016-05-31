@@ -14,56 +14,56 @@ using mysql_res = std::unique_ptr<MYSQL_RES, mysql_res_destroyer>;
 namespace krys 
 <%
 
-inline mysql_conn mysql_init ()
+inline mysql_conn mysql_init () noexcept
 {
 	return mysql_conn {mysql_init ((MYSQL*)NULL)};
 }
 
 inline MYSQL* mysql_real_connect (const mysql_conn& con, string_ref host = "127.0.0.1", 
 		string_ref user = "root", string_ref pswd = "", string_ref db_name = "", 
-		uint16_t port = 3306, const char* unix_socket = nullptr, uint32_t flag = 0)
+		uint16_t port = 3306, const char* unix_socket = nullptr, uint32_t flag = 0) noexcept
 {
 	return mysql_real_connect (con.get (), host.data (), user.data (), pswd.data (), db_name.data (), port, unix_socket, flag);
 }
 
-inline int mysql_query (const mysql_conn& con, string_ref cmd)
+inline int mysql_query (const mysql_conn& con, string_ref cmd) noexcept
 {
 	return mysql_query (con.get (), cmd.data ());
 }
 
-inline string_ref mysql_error (const mysql_conn& conn)
+inline string_ref mysql_error (const mysql_conn& conn) noexcept
 {
 	return mysql_error (conn.get ());
 }
 
-inline mysql_res mysql_store_result (const mysql_conn& conn)
+inline mysql_res mysql_store_result (const mysql_conn& conn) noexcept
 {
 	return mysql_res {mysql_store_result (conn.get ())};
 }
 
-inline unsigned int mysql_num_fields (const mysql_res& res)
+inline unsigned int mysql_num_fields (const mysql_res& res) noexcept
 {
 	return mysql_num_fields (res.get ());
 }
 
-inline unsigned long long mysql_num_rows (const mysql_res& res)
+inline unsigned long long mysql_num_rows (const mysql_res& res) noexcept
 {
 	return mysql_num_rows (res.get ());
 }
 
-inline MYSQL_ROW mysql_fetch_row (const mysql_res& res)
+inline MYSQL_ROW mysql_fetch_row (const mysql_res& res) noexcept
 {
 	return mysql_fetch_row (res.get ());
 }
 
-inline MYSQL_ROW_OFFSET mysql_row_tell_ (const mysql_res& res)
+inline MYSQL_ROW_OFFSET mysql_row_tell_ (const mysql_res& res) noexcept
 {
 	return mysql_row_tell (res.get ());
 }
 
 
 template<typename ... STR_REF_CTOR>
-inline std::string mysql_real_escape_string (const mysql_conn& conn, STR_REF_CTOR&& ... ref_ctor)
+inline std::string mysql_real_escape_string (const mysql_conn& conn, STR_REF_CTOR&& ... ref_ctor) noexcept
 {
 	string_ref input {std::forward<STR_REF_CTOR> (ref_ctor)...};
 
