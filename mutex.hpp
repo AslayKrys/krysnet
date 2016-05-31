@@ -1,3 +1,5 @@
+#ifndef  __MUTEX__
+#define  __MUTEX__
 #include <pthread.h>
 
 namespace krys
@@ -49,3 +51,5 @@ private:
 
 
 %>
+
+#endif

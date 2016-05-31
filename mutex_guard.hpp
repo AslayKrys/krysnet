@@ -1,7 +1,12 @@
+#ifndef __MUTEX_GUARD__
+#define __MUTEX_GUARD__
+
+
 #include "mutex.hpp"
 
 namespace krys
 <%
+
 class mutex_guard
 { 
 public:
@@ -26,3 +31,8 @@ protected:
 };
 
 %>
+
+#define mutex_guard(...) \
+	static_assert (false, "cannot use mutex_guard this way")
+
+#endif
