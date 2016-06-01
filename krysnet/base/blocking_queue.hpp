@@ -3,8 +3,9 @@
 
 
 #include <queue>
-#include "condition.hpp"
-#include "mutex_guard.hpp"
+#include "krysnet/base/mutex.hpp"
+#include "krysnet/base/mutex_guard.hpp"
+#include "krysnet/base/condition.hpp"
 
 namespace krys
 <%
@@ -28,7 +29,6 @@ public:
 		queue_.emplace_back (std::forward<ARGS>(args)...);
 		not_empty_.notify ();
 	}
-
 
 
 
