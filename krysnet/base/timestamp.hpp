@@ -16,14 +16,12 @@ class timestamp : public boost::less_than_comparable<timestamp>
 public:
 	constexpr static int microseconds_per_second = 1000 * 1000;
 public:
-	timestamp () noexcept: microseconds_since_epoc_ (0)
-	{
-
-	}
+	timestamp () = default;
 	explicit timestamp (uint64_t microseconds_since_epoc)  noexcept: microseconds_since_epoc_ (microseconds_since_epoc) 
 	{ 
 
 	}
+	compl timestamp () = default;
 
 	void swap (timestamp& that) noexcept
 	{
@@ -101,7 +99,7 @@ public: //static
 	}
 
 private:
-	uint64_t microseconds_since_epoc_;
+	uint64_t microseconds_since_epoc_ = 0;
 };
 
 inline bool operator < (timestamp l, timestamp r) noexcept

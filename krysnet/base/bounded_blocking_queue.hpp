@@ -11,11 +11,14 @@ template<typename T>
 class bounded_blocking_queue
 {
 public:
-	explicit bounded_blocking_queue (int max_size);
+	explicit bounded_blocking_queue (int max_size) noexcept
+	{
+
+	}
 
 private:
 	mutable mutex m_;
-	condition not_empty_;
+	condition not_empty_ {m_};
 	std::deque<T> queue_;
 
 };

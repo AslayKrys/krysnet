@@ -14,7 +14,7 @@ template<typename T>
 class blocking_queue
 {
 public:
-	blocking_queue () noexcept: m_ (),not_empty_ (m_),queue_ ()
+	blocking_queue () noexcept
 	{
 
 	}
@@ -30,7 +30,7 @@ public:
 		not_empty_.notify ();
 	}
 
-	T pop ()
+	T pop () noexcept
 	{
 		mutex_guard lock (m_);
 		while (queue_.empty ())
@@ -43,7 +43,7 @@ public:
 		return front_item;
 	}
 
-	size_t size () const
+	size_t size () const noexcept
 	{
 		mutex_guard lock (m_);
 		return queue_.size ();
@@ -51,9 +51,9 @@ public:
 
 
 private:
-	mutable mutex m_;
-	condition not_empty_;
-	std::deque<T> queue_;
+	mutable mutex m_ {};
+	condition not_empty_ {m_};
+	std::deque<T> queue_ {};
 };
 
 
