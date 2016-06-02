@@ -43,7 +43,7 @@ public:
 		return front_item;
 	}
 
-	size_t size ()
+	size_t size () const
 	{
 		mutex_guard lock (m_);
 		return queue_.size ();
@@ -51,7 +51,7 @@ public:
 
 
 private:
-	mutex m_;
+	mutable mutex m_;
 	condition not_empty_;
 	std::deque<T> queue_;
 };
