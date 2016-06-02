@@ -2,7 +2,7 @@
 #define __BLOCKING_QUEUE__
 
 
-#include <queue>
+#include <deque>
 #include "krysnet/base/mutex.hpp"
 #include "krysnet/base/mutex_guard.hpp"
 #include "krysnet/base/condition.hpp"
@@ -30,12 +30,30 @@ public:
 		not_empty_.notify ();
 	}
 
+	T pop ()
+	{
+		mutex_guard lock (m_);
+		while (queue_.empty ())
+		{
+			not_empty_.wait ();
+		}
+
+		T front_item = std::move (queue_.front ());
+		queue_.pop_front ();
+		return front_item;
+	}
+
+	size_t size ()
+	{
+		mutex_guard lock (m_);
+		return queue_.size ();
+	}
 
 
 private:
 	mutex m_;
 	condition not_empty_;
-	std::queue<T> queue_;
+	std::deque<T> queue_;
 };
 
 
