@@ -10,7 +10,7 @@ namespace krys
 class mutex_guard
 { 
 public:
-	mutex_guard (mutex& m):m_ (m)
+	mutex_guard (mutex& m) noexcept:m_ (m)
 	{
 		m_.lock ();
 	}
@@ -20,7 +20,7 @@ public:
 	mutex_guard (mutex_guard&&) = delete;
 	void operator = (const mutex_guard&) = delete;
 
-	compl mutex_guard ()
+	compl mutex_guard () noexcept
 	{
 		m_.unlock ();
 	}

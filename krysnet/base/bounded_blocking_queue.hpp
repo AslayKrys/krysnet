@@ -20,7 +20,7 @@ public:
 	}
 
 	template<typename ... ARGS>
-	void put (ARGS&& ... args)
+	void put (ARGS&& ... args) noexcept
 	{
 		mutex_guard lock (m_);
 		while (queue_.empty ())
@@ -28,7 +28,6 @@ public:
 			not_empty_.wait ();
 		}
 		assert (!queue_.empty ());
-		
 	}
 
 private:
