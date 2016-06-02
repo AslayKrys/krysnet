@@ -32,38 +32,41 @@ public:
 
 	string to_string () noexcept
 	{
-		string str (32, '\0');
+		string str (31, '\0');
 
 		uint64_t sec = microseconds_since_epoc_ / microseconds_per_second;
 		uint64_t microseconds = microseconds_since_epoc_ % microseconds_per_second;
 
-		snprintf (const_cast<char*>(str.data ()), 32 - 1, "%" PRId64 ".%06" PRId64 "", sec, microseconds);
+		int len = snprintf (const_cast<char*>(str.data ()), 32, "%" PRId64 ".%06" PRId64 "", sec, microseconds);
+		str.resize (len);
 
 		return str;
 	}
 
 	string to_formatted_string (bool show_microseconds = true) noexcept
 	{
-		string str (32, '\0');
+		string str (31, '\0');
 		time_t seconds = static_cast<time_t> (microseconds_since_epoc_ / microseconds_per_second);
 		struct tm tm_time;
 		gmtime_r (&seconds, &tm_time);
 
+		int len;
 		if (show_microseconds)
 		{
 			int microseconds = static_cast<int> (microseconds_since_epoc_ % microseconds_per_second);
 
-			snprintf (const_cast<char*> (str.data ()), 32 - 1, "%04d%02d%02d %02d:%02d:%02d.%06d",
+			len = snprintf (const_cast<char*> (str.data ()), 32, "%04d%02d%02d %02d:%02d:%02d.%06d",
 					tm_time.tm_year + 1900, tm_time.tm_mon + 1, tm_time.tm_mday,
 					tm_time.tm_hour, tm_time.tm_min, tm_time.tm_sec, microseconds);
 		}
 		else
 		{
-			snprintf (const_cast<char*> (str.data ()), 32 - 1, "%04d%02d%02d %02d:%02d:%02d",
+			len = snprintf (const_cast<char*> (str.data ()), 32, "%04d%02d%02d %02d:%02d:%02d",
 					tm_time.tm_year + 1900, tm_time.tm_mon + 1, tm_time.tm_mday,
 					tm_time.tm_hour, tm_time.tm_min, tm_time.tm_sec);
 		}
 
+		str.resize (len);
 		return str;
 	}
 
