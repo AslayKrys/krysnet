@@ -61,19 +61,11 @@ private: /// construction
 	}
 	compl object_pool () = default;
 
-	auto recycle (T* obj) noexcept
+	template<typename deleter>
+	auto recycle (unique_ptr<T, deleter> obj) noexcept
 	{
-		assert (obj);
-		assert (pool_data_.size () <= max_spare_);
-
-		if (pool_data_.size () == max_spare_)
-		{
-			delete obj;
-		}
-		else
-		{
-			pool_data_.emplace_back (obj);
-		}
+	 	assert (pool_data_.size () < max_spare_);
+	   	pool_data_.emplace_back (std::move (obj));
 	}
 
 	void set_max_spare (uint32_t val)
@@ -86,6 +78,11 @@ private: /// construction
 		}
 	}
 
+	uint32_t max_spare ()
+	{
+		return max_spare_;
+	}
+
 private: /// data
 	uint32_t max_spare_ = static_cast<uint32_t> (-1);
 	std::vector<unique_ptr<T>> pool_data_;
@@ -96,7 +93,15 @@ struct recycle_deleter
 {
 	void operator () (T* ptr)
 	{
-		thread_singleton<object_pool<T>>::instance ().recycle (ptr);
+		auto& pool = thread_singleton<object_pool<T>>::instance ();
+		if (pool.max_spare () == pool.size ())
+		{
+			delete ptr;
+		}
+		else
+		{
+			pool.recycle (unique_ptr<T>(ptr));
+		}
 	}
 };
 
