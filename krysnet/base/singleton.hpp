@@ -9,7 +9,7 @@ template<typename T>
 class singleton
 {
 public:
-	static T& instance ()
+	static T& instance () noexcept
 	{
 		static T obj_instance;
 		return obj_instance;
