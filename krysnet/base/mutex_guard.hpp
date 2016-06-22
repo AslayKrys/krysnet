@@ -32,6 +32,9 @@ protected:
 
 %>
 
+#define GUARD_THIS(lock) \
+	krys::mutex_guard CONCAT(guard,__LINE__) {lock}
+
 #define mutex_guard(...) \
 	static_assert (false, "cannot use mutex_guard this way")
 
