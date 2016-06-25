@@ -8,13 +8,14 @@
 #include "krysnet/base/mutex_guard.hpp"
 
 
+using namespace std::string_literals;
+using std::string;
 
 
 inline char gen_rand_char ()
 {
 	return static_cast<char> (rand ());
 }
-using namespace std::string_literals;
 
 std::string rand_str (int len)
 {

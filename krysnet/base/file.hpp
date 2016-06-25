@@ -6,6 +6,7 @@
 #include <type_traits>
 #include <experimental/optional>
 #include <experimental/string_view>
+#include "krysnet/base/array_view.hpp"
 
 namespace krys 
 <%
@@ -33,9 +34,12 @@ inline file_ptr open_file (const char* path, const char* mode)
 	return file_ptr{fopen (path, mode)};
 }
 
-auto write_to_file (FILE* fp, string_view view)
+template<typename T>
+auto write_to_file (FILE* fp, array_view<T> view)
 {
-	return fwrite (view.data (), sizeof (char), view.size (), fp);
+	static_assert (!std::is_pointer<T>::value, "writing an array of pointer to file");
+	static_assert (std::is_pod<T>::value, "array type is not POD");
+	return fwrite (view.data (), sizeof (T), view.size (), fp);
 }
 
 inline optional<string> read_all (const string& filename)
