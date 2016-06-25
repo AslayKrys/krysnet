@@ -6,6 +6,9 @@
 #include <deque>
 #include <functional>
 
+namespace krys 
+<%
+
 using std::string;
 using std::unique_ptr;
 using std::shared_ptr;
@@ -16,6 +19,7 @@ using std::deque;
 using std::thread;
 using std::ostringstream;
 using std::function;
+%>
 
 #define CONCAT_HELPER(a,b) a##b
 #define CONCAT(a,b) CONCAT_HELPER(a,b)

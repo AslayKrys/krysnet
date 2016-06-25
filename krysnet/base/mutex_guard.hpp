@@ -2,7 +2,8 @@
 #define __MUTEX_GUARD__
 
 
-#include "mutex.hpp"
+#include "krysnet/base/mutex.hpp"
+#include "krysnet/base/usings.hpp"
 
 namespace krys
 <%
@@ -17,7 +18,6 @@ public:
 
 	void* operator new (size_t size) = delete;
 	mutex_guard (const mutex_guard&) = delete;
-	mutex_guard (mutex_guard&&) = delete;
 	void operator = (const mutex_guard&) = delete;
 
 	compl mutex_guard () noexcept

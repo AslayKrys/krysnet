@@ -117,7 +117,6 @@ public:
 		{
 			end = view.begin () + left;
 		}
-
 		cur_ = std::copy (view.begin (), end, cur_);
 	}
 

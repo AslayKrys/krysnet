@@ -1,31 +1,34 @@
+#ifndef __KRYS_EXCEPTION__
+#define __KRYS_EXCEPTION__
 #include "krysnet/base/usings.hpp"
 #include <execinfo.h>
 #include <string.h>
 #include <cxxabi.h>
 #include <sstream>
+#include <exception>
 
 
 
 
 namespace krys
 <%
+
 class exception : public std::exception
 {
 public:
 
-	explicit exception (const string& what): message_ (what)
+	explicit exception (string what): message_ {std::move (what)}
 	{
 		fill_backtrace ();
 	}
 
-	explicit exception (const char* what) :exception (string {what})
-	{
-	}
+	explicit exception (const char* what) :exception (string {what}) { }
 
-	virtual compl exception () throw ()
-	{
-	}
-	virtual const char* what () const throw () override
+	exception (const exception&) = delete;
+	exception (exception&&) = default; 
+
+	compl exception () throw () override = default;
+	const char* what () const throw () override
 	{
 		return message_.data ();
 	}
@@ -45,13 +48,13 @@ private:
 		std::array<char, 127 + 1> func;
 		std::array<char, 15 + 1> addr;
 
-		for (int i = 0; i < len; i++)
+		for (int i = len - 1; i >= 0; i--)
 		{
 			sscanf (symbols[i], "%31[^(](%127[^+]", module.data (), func.data ());
 
 			int status;
-			unique_ptr<char[]> pretty_function {abi::__cxa_demangle (func.data (), 0, 0, &status)};
-			snprintf (addr.data (), 15, "%p", buffers[i]);
+			auto pretty_function = unique_ptr<char[]>  {abi::__cxa_demangle (func.data (), nullptr, nullptr, &status)};
+			snprintf (addr.data (), 15, "%p", buffers.at (i));
 
 			if (pretty_function or ::strcmp ("main", func.data ()) == 0)
 			{
@@ -81,3 +84,5 @@ private:
 };
 
 %>
+
+#endif

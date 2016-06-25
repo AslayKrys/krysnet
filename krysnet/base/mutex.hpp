@@ -1,6 +1,7 @@
 #ifndef  __MUTEX__
 #define  __MUTEX__
 #include <pthread.h>
+#include <mutex>
 
 namespace krys
 <%
@@ -18,7 +19,6 @@ public:
 	void* operator new (size_t size) = delete;
 
 	mutex (const mutex&) = delete;
-	mutex (mutex&&) = delete;
 	void operator = (const mutex&) = delete;
 
 	compl mutex () noexcept
@@ -45,9 +45,15 @@ private:
 
 	friend class mutex_guard;
 	friend class condition;
+	friend class std::lock_guard<mutex>;
 private:
 	pthread_mutex_t mutex_;
 };
+
+using std_guard = ::std::lock_guard<mutex>;
+
+#define LOCK_THIS(lock) \
+	 ::krys::std_guard CONCAT(guard,__LINE__) {lock}
 
 
 %>
