@@ -59,8 +59,33 @@ auto write_to_file (ARGS&& ... args)
 	return fwrite (buf.view_.data (), sizeof (char), buf.view_.size (), fp);
 }
 
-inline optional<string> read_all (const string& filename)
+inline optional<string> read_all (string_view filename)
 {
+	string buffer_read;
+	auto fp = open_file (filename.data (), "rb");
+	
+	if (fp == nullptr)
+	{
+		return {};
+	}
+	
+	if (::fseek (fp.get (), 0, SEEK_END) != 0)
+	{
+		return {};
+	}
+	
+	signed length;
+	if ((length = ::ftell (fp.get ())) == -1)
+	{
+		return {};
+	}
+	
+	if (::fseek (fp.get (), 0, SEEK_SET) != 0)
+	{
+		return {};
+	}
+	buffer_read.resize (length);
+	
 	return {};
 }
 
