@@ -5,10 +5,11 @@
 #include <memory>
 #include <deque>
 #include <functional>
+#include <experimental/string_view>
 
 namespace krys 
 <%
-
+using std::experimental::string_view;
 using std::string;
 using std::unique_ptr;
 using std::shared_ptr;
