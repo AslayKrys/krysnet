@@ -94,7 +94,7 @@ inline optional<string> read_all (string_view filename)
 		return {};
 	}
 	
-	return buffer_read;
+	return std::move (buffer_read);
 }
 
 %>
