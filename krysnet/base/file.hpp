@@ -85,8 +85,16 @@ inline optional<string> read_all (string_view filename)
 		return {};
 	}
 	buffer_read.resize (length);
+
+	auto read_len = ::fread (const_cast<char*> (buffer_read.data ()), 
+			1, buffer_read.length (), fp.get ());
+
+	if (read_len != buffer_read.length ())
+	{
+		return {};
+	}
 	
-	return {};
+	return buffer_read;
 }
 
 %>

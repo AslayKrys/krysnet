@@ -9,17 +9,15 @@ int main (int argc, char** argv)
 {
 	std::string str = "12345";
 
-	auto fp = krys::open_file ("123.txt", "a+");
-	if (fp == nullptr)
+	auto op_str = krys::read_all ("123.txt");
+	if (!op_str)
 	{
-		return 0;
+		std::cout << "failed reading file" << std::endl;
+		return 1;
 	}
 
-	krys::write_to_file (
-			buffer {str}, 
-			FILE_HANDLE {fp.get ()}
-			);
-	
+
+	std::cout << *op_str << std::endl;
 	
 	return 0;
 }
