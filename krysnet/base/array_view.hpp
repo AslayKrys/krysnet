@@ -3,6 +3,7 @@
 #include <type_traits>
 #include <iterator>
 #include <vector>
+#include <cstddef>
 #include "krysnet/base/exception.hpp"
 #include <array>
 #include <string>
@@ -67,13 +68,13 @@ public:
 
 	constexpr iterator begin () { return data_;}
 	constexpr iterator end () { return data_ + size_;}
-	constexpr const_iterator cbegin () { return data_;}
-	constexpr const_iterator cend () { return data_ + size_;}
+	constexpr const_iterator cbegin () const { return data_;}
+	constexpr const_iterator cend () const { return data_ + size_;}
 	constexpr reverse_iterator rbegin () { return std::reverse_iterator<iterator> (end ());}
 	constexpr reverse_iterator rend () { return std::reverse_iterator<iterator> (begin ());}
-	constexpr size_type size () { return size_; }
-	constexpr size_type length () { return size_; }
-	constexpr bool empty () { return size_ == 0; }
+	constexpr size_type size () const{ return size_; }
+	constexpr size_type length () const { return size_; }
+	constexpr bool empty () const{ return size_ == 0; }
 	constexpr DATA& operator [] (size_type size) { return at (size); }
 	constexpr const DATA& operator [] (size_type size) const { return at (size); }
 

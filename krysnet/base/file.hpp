@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <memory>
+#include "krysnet/base/utility.hpp"
 #include <type_traits>
 #include <experimental/optional>
 #include <experimental/string_view>
@@ -34,12 +35,28 @@ inline file_ptr open_file (const char* path, const char* mode)
 	return file_ptr{fopen (path, mode)};
 }
 
-template<typename T>
-auto write_to_file (FILE* fp, array_view<T> view)
+struct buffer 
 {
-	static_assert (!std::is_pointer<T>::value, "writing an array of pointer to file");
-	static_assert (std::is_pod<T>::value, "array type is not POD");
-	return fwrite (view.data (), sizeof (T), view.size (), fp);
+	template<typename ... ARGS>
+	buffer (ARGS&& ... args) : view_ (std::forward<ARGS>(args)...) {}
+	string_view view_;
+};
+
+
+using FILE_HANDLE = FILE*;
+
+template<typename ... ARGS>
+auto write_to_file (ARGS&& ... args)
+{
+	CHECK_MANDATORY_PARA (buffer, ARGS);
+	CHECK_MANDATORY_PARA (FILE*, ARGS);
+	buffer buf;
+	FILE* fp;
+	get_paras (buf, std::forward<ARGS>(args)...);
+	get_paras (fp, std::forward<ARGS> (args)...);
+
+	
+	return fwrite (buf.view_.data (), sizeof (char), buf.view_.size (), fp);
 }
 
 inline optional<string> read_all (const string& filename)

@@ -1,9 +1,10 @@
 #include <mysql/mysql.h>
 #include <memory>
-#include <boost/utility/string_ref.hpp>
+#include "krysnet/base/array_view.hpp"
+#include <experimental/string_view>
 
 
-using string_ref = boost::string_ref;
+using std::experimental::string_view;
 
 struct mysql_closer { void operator () (MYSQL* con) { mysql_close (con); } };
 using mysql_conn = std::unique_ptr<MYSQL, mysql_closer>;
@@ -19,19 +20,19 @@ inline mysql_conn mysql_init () noexcept
 	return mysql_conn {mysql_init ((MYSQL*)NULL)};
 }
 
-inline MYSQL* mysql_real_connect (const mysql_conn& con, string_ref host = "127.0.0.1", 
-		string_ref user = "root", string_ref pswd = "", string_ref db_name = "", 
+inline MYSQL* mysql_real_connect (const mysql_conn& con, string_view host = "127.0.0.1", 
+		string_view user = "root", string_view pswd = "", string_view db_name = "", 
 		uint16_t port = 3306, const char* unix_socket = nullptr, uint32_t flag = 0) noexcept
 {
 	return mysql_real_connect (con.get (), host.data (), user.data (), pswd.data (), db_name.data (), port, unix_socket, flag);
 }
 
-inline int mysql_query (const mysql_conn& con, string_ref cmd) noexcept
+inline int mysql_query (const mysql_conn& con, string_view cmd) noexcept
 {
 	return mysql_query (con.get (), cmd.data ());
 }
 
-inline string_ref mysql_error (const mysql_conn& conn) noexcept
+inline string_view mysql_error (const mysql_conn& conn) noexcept
 {
 	return mysql_error (conn.get ());
 }
@@ -62,15 +63,12 @@ inline MYSQL_ROW_OFFSET mysql_row_tell_ (const mysql_res& res) noexcept
 }
 
 
-template<typename ... STR_REF_CTOR>
-inline std::string mysql_real_escape_string (const mysql_conn& conn, STR_REF_CTOR&& ... ref_ctor) noexcept
+inline std::string mysql_escape_string (MYSQL* conn, string_view input) noexcept
 {
-	string_ref input {std::forward<STR_REF_CTOR> (ref_ctor)...};
-
 	std::string result;
 	result.resize (input.size () * 2);
 
-	auto result_len = mysql_real_escape_string (conn.get (), const_cast<char*> (result.data ()), input.data (), input.length ());
+	auto result_len = mysql_real_escape_string (conn, const_cast<char*> (result.data ()), input.data (), input.length ());
 
 	result.resize (result_len);
 	return result;
